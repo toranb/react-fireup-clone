@@ -23,7 +23,8 @@
     var three = {id: 3, name: "third", foods: []};
     var four = {id: 4, name: "fourth", foods: []};
     var five = {id: 5, name: "fifth", foods: []};
-    var models = [one, two, three, four, five];
+    var six = {id: 6, name: "sixth", foods: []};
+    var models = [one, two, three, four, five, six];
 
     var Link = ReactRouter.Link;
     var Route = ReactRouter.Route;
@@ -34,21 +35,20 @@
       },
       render: function() {
         var tables = models.map(function(table) {
-          return <li><Link className="panel six columns" to="table" table_id={table.id}>{table.id}</Link></li>
+          return <Link className="panel six columns" to="table" table_id={table.id}>{table.id}</Link>
         });
         return (
           <div className="row">
             <div className="twelve columns">
-              <h1>Order</h1>
+              <h1>Ordr</h1>
               <hr />
               <p>
                 <div className="row">
                   <div id="tables" className="four columns">
-                    <ul>
-                      {tables}
-                    </ul>
+                    <h2>Tables</h2>
+                    {tables}
                   </div>
-                  <div id="table" className="eight columns">
+                  <div id="order" className="eight columns">
                     {this.props.activeRoute || this.indexTemplate()}
                   </div>
                 </div>
@@ -79,24 +79,25 @@
           total: 0
         };
       },
+      addFood: function(e) {
+        var selectedFood = e.target.className;
+        var food = foods[0];
+        var table = models[2];
+        table.foods.push(food);
+        this.setState({table: table});
+      },
       render: function() {
-        var addFood = function(e) {
-          var selectedFood = e.target.className;
-          var food = foods[0];
-          var table = models[2];
-          table.foods.push(food);
-          this.forceUpdate();
-        }.bind(this);
+        var self = this;
         var food_models = foods.map(function(food) {
-          return <li><a onClick={addFood}><img className={food.id} src={food.image_url} /><p>{food.name}</p></a></li>
+          return <li><a ref={food.id} onClick={self.addFood}><img className={food.id} src={food.image_url} /><p>{food.name}</p></a></li>
         });
         var selected;
         if (this.state.table.foods.length > 0) {
           var selected = this.state.table.foods.map(function(food) {
-            return <li><h3>{food.name} <span>$5</span></h3></li>
+            return <li><h3>{food.name} <span className="right">$5</span></h3></li>
           });
         }else{
-          selected = <li><h3>Please select a food item.</h3></li>
+          selected = <li><h3>Click a food to add it</h3></li>
         }
         return (
           <div className="row">
@@ -106,10 +107,10 @@
               </ul>
             </div>
             <div className="nine columns">
-                <h2>Table <span>{this.state.table.id}</span></h2>
+                <h2>Table <span className="identifier">{this.state.table.id}</span></h2>
                 <ul id="customer-tab">
                   {selected}
-                  <li id="total"><h3>Total <span>$0</span></h3></li>
+                  <li id="total"><h3>Total <span className="right">$0</span></h3></li>
                 </ul>
             </div>
           </div>

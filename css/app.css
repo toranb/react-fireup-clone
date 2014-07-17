@@ -8,7 +8,7 @@
   background-color: #e6e6e6;
 }
 
-#tables .active:hover, .active, h2 span {
+#tables .active:hover, .active, h2 span.identifier {
   background-color: #333;
   color: white;
 }
@@ -47,7 +47,7 @@ ul#menu li p {
 #customer-tab li h3 {
   font-weight: normal;
 }
-#customer-tab li span {
+#customer-tab li span.right {
   float: right;
 }
 
