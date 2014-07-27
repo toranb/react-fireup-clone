@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <script src="bower_components/react/react.js"></script>
-  <script src="bower_components/toranb-react-nested-router/main.js"></script>
+  <script src="bower_components/react/react.min.js"></script>
+  <script src="bower_components/react-router/dist/react-router.min.js"></script>
   <script src="bower_components/react/JSXTransformer.js"></script>
   <script type="text/jsx">
     /** @jsx React.DOM */
-    var pizza = {id: 1, name: "Pizza", image_url: "img/pizza.png"};
-    var pancakes = {id: 2, name: "Pancakes", image_url: "img/pancakes.png"};
-    var fries = {id: 3, name: "Fries", image_url: "img/fries.png"};
-    var hotdog = {id: 4, name: "Hotdog", image_url: "img/hotdog.png"};
+    var pizza = {id: 1, name: "Pizza", image_url: "/img/pizza.png"};
+    var pancakes = {id: 2, name: "Pancakes", image_url: "/img/pancakes.png"};
+    var fries = {id: 3, name: "Fries", image_url: "/img/fries.png"};
+    var hotdog = {id: 4, name: "Hotdog", image_url: "/img/hotdog.png"};
     var foods = [pizza, pancakes, fries, hotdog];
 
     var one = {id: 1, name: "first", foods: []};
@@ -28,7 +28,8 @@
 
     var Link = ReactRouter.Link;
     var Route = ReactRouter.Route;
-    var Router = ReactRouter.Router;
+    var Routes = ReactRouter.Routes;
+
     var Tables = React.createClass({
       indexTemplate: function() {
         return <h2>Please select a table</h2>
@@ -49,7 +50,7 @@
                     {tables}
                   </div>
                   <div id="order" className="eight columns">
-                    {this.props.activeRoute || this.indexTemplate()}
+                    {this.props.activeRouteHandler() || this.indexTemplate()}
                   </div>
                 </div>
               </p>
@@ -117,12 +118,14 @@
         )
       }
     });
-    var Start = Router(
-        Route({handler:Tables},
-            Route({name:"table", path:"table/:table_id", handler:Table})
-        )
-    );
-    Start.renderComponent(document.body);
+    var routes = (
+      <Routes>
+        <Route handler={Tables}>
+          <Route name="table" path="table/:table_id" handler={Table}/>
+        </Route>
+      </Routes>
+    )
+    React.renderComponent(routes, document.body);
   </script>
 </body>
 </html>
