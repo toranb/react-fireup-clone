@@ -12,10 +12,10 @@
   <script src="bower_components/react/JSXTransformer.js"></script>
   <script type="text/jsx">
     /** @jsx React.DOM */
-    var pizza = {id: 1, name: "Pizza", image_url: "/img/pizza.png"};
-    var pancakes = {id: 2, name: "Pancakes", image_url: "/img/pancakes.png"};
-    var fries = {id: 3, name: "Fries", image_url: "/img/fries.png"};
-    var hotdog = {id: 4, name: "Hotdog", image_url: "/img/hotdog.png"};
+    var pizza = {id: 1, cost: 5, name: "Pizza", image_url: "/img/pizza.png"};
+    var pancakes = {id: 2, cost: 6, name: "Pancakes", image_url: "/img/pancakes.png"};
+    var fries = {id: 3, cost: 7, name: "Fries", image_url: "/img/fries.png"};
+    var hotdog = {id: 4, cost: 8, name: "Hotdog", image_url: "/img/hotdog.png"};
     var foods = [pizza, pancakes, fries, hotdog];
 
     var one = {id: 1, name: "first", foods: []};
@@ -74,28 +74,38 @@
           }
         }
       },
-      getInitialState: function() {
-        return {
-          table: this.findTable(this.props.params.table_id),
-          total: 0
-        };
-      },
       addFood: function(e) {
-        var selectedFood = e.target.className;
-        var food = foods[0];
-        var table = models[2];
+        var table = this.state.table;
+        var food = this.findFood(e.target.className);
         table.foods.push(food);
+        var total = this.getCurrentTotal(table);
         this.setState({table: table});
+        this.setState({total: total});
+      },
+      getCurrentTotal: function(table) {
+        var total = 0;
+        table.foods.forEach(function(item) {
+            return total += item.cost;
+        });
+        return total;
+      },
+      getInitialState: function() {
+        var table = this.findTable(this.props.params.table_id);
+        var total = this.getCurrentTotal(table);
+        return {
+          table: table,
+          total: total
+        };
       },
       render: function() {
         var self = this;
         var food_models = foods.map(function(food) {
-          return <li><a ref={food.id} onClick={self.addFood}><img className={food.id} src={food.image_url} /><p>{food.name}</p></a></li>
+          return <li><a onClick={self.addFood}><img className={food.id} src={food.image_url} /><p>{food.name}</p></a></li>
         });
         var selected;
         if (this.state.table.foods.length > 0) {
           var selected = this.state.table.foods.map(function(food) {
-            return <li><h3>{food.name} <span className="right">$5</span></h3></li>
+            return <li><h3>{food.name} <span className="right">${food.cost}</span></h3></li>
           });
         }else{
           selected = <li><h3>Click a food to add it</h3></li>
@@ -111,7 +121,7 @@
                 <h2>Table <span className="identifier">{this.state.table.id}</span></h2>
                 <ul id="customer-tab">
                   {selected}
-                  <li id="total"><h3>Total <span className="right">$0</span></h3></li>
+                  <li id="total"><h3>Total <span className="right">${this.state.total}</span></h3></li>
                 </ul>
             </div>
           </div>
