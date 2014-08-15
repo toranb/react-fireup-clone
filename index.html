@@ -7,135 +7,28 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <script src="bower_components/react/react.min.js"></script>
-  <script src="bower_components/react-router/dist/react-router.min.js"></script>
-  <script src="bower_components/react/JSXTransformer.js"></script>
-  <script type="text/jsx">
-    /** @jsx React.DOM */
+  <script src="bower_components/react-es6-loader/loader.js"></script>
+  <script src="bower_components/react/react.js"></script>
+  <script src="bower_components/react-router/dist/react-router.js"></script>
+  <script src="dist/deps.min.js"></script>
+  <script>
+    var tables = [
+      {id: 1, foods: []},
+      {id: 2, foods: []},
+      {id: 3, foods: []},
+      {id: 4, foods: []},
+      {id: 5, foods: []},
+      {id: 6, foods: []}
+    ];
+
     var pizza = {id: 1, cost: 5, name: "Pizza", image_url: "/img/pizza.png"};
     var pancakes = {id: 2, cost: 6, name: "Pancakes", image_url: "/img/pancakes.png"};
     var fries = {id: 3, cost: 7, name: "Fries", image_url: "/img/fries.png"};
-    var hotdog = {id: 4, cost: 8, name: "Hotdog", image_url: "/img/hotdog.png"};
+    var hotdog = {id: 4, cost: 8, name: "Hotdog", image_url: "/img/hotdog.png"}
     var foods = [pizza, pancakes, fries, hotdog];
-
-    var one = {id: 1, name: "first", foods: []};
-    var two = {id: 2, name: "second", foods: []};
-    var three = {id: 3, name: "third", foods: []};
-    var four = {id: 4, name: "fourth", foods: []};
-    var five = {id: 5, name: "fifth", foods: []};
-    var six = {id: 6, name: "sixth", foods: []};
-    var models = [one, two, three, four, five, six];
-
-    var Link = ReactRouter.Link;
-    var Route = ReactRouter.Route;
-    var Routes = ReactRouter.Routes;
-
-    var Tables = React.createClass({
-      indexTemplate: function() {
-        return <h2>Please select a table</h2>
-      },
-      render: function() {
-        var tables = models.map(function(table) {
-          return <Link className="panel six columns" to="table" table_id={table.id}>{table.id}</Link>
-        });
-        return (
-          <div className="row">
-            <div className="twelve columns">
-              <h1>Ordr</h1>
-              <hr />
-              <p>
-                <div className="row">
-                  <div id="tables" className="four columns">
-                    <h2>Tables</h2>
-                    {tables}
-                  </div>
-                  <div id="order" className="eight columns">
-                    {this.props.activeRouteHandler() || this.indexTemplate()}
-                  </div>
-                </div>
-              </p>
-            </div>
-          </div>
-        )
-      }
-    });
-    var Table = React.createClass({
-      findTable: function(table_id) {
-        for (var i = 0, l = models.length; i < l; i ++) {
-          if (models[i].id == table_id) {
-            return models[i];
-          }
-        }
-      },
-      findFood: function(food_id) {
-        for (var i = 0, l = foods.length; i < l; i ++) {
-          if (foods[i].id == food_id) {
-            return foods[i];
-          }
-        }
-      },
-      addFood: function(e) {
-        var table = this.state.table;
-        var food = this.findFood(e.target.className);
-        table.foods.push(food);
-        var total = this.getCurrentTotal(table);
-        this.setState({table: table});
-        this.setState({total: total});
-      },
-      getCurrentTotal: function(table) {
-        var total = 0;
-        table.foods.forEach(function(item) {
-            return total += item.cost;
-        });
-        return total;
-      },
-      getInitialState: function() {
-        var table = this.findTable(this.props.params.table_id);
-        var total = this.getCurrentTotal(table);
-        return {
-          table: table,
-          total: total
-        };
-      },
-      render: function() {
-        var self = this;
-        var food_models = foods.map(function(food) {
-          return <li><a onClick={self.addFood}><img className={food.id} src={food.image_url} /><p>{food.name}</p></a></li>
-        });
-        var selected;
-        if (this.state.table.foods.length > 0) {
-          var selected = this.state.table.foods.map(function(food) {
-            return <li><h3>{food.name} <span className="right">${food.cost}</span></h3></li>
-          });
-        }else{
-          selected = <li><h3>Click a food to add it</h3></li>
-        }
-        return (
-          <div className="row">
-            <div className="three columns">
-              <ul id="menu">
-              {food_models}
-              </ul>
-            </div>
-            <div className="nine columns">
-                <h2>Table <span className="identifier">{this.state.table.id}</span></h2>
-                <ul id="customer-tab">
-                  {selected}
-                  <li id="total"><h3>Total <span className="right">${this.state.total}</span></h3></li>
-                </ul>
-            </div>
-          </div>
-        )
-      }
-    });
-    var routes = (
-      <Routes>
-        <Route handler={Tables}>
-          <Route name="table" path="table/:table_id" handler={Table}/>
-        </Route>
-      </Routes>
-    )
-    React.renderComponent(routes, document.body);
+  
+    var Router = require("app/router")["default"];
+    React.renderComponent(Router, document.body);
   </script>
 </body>
 </html>
